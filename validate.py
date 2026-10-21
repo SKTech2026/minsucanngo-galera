@@ -12,6 +12,7 @@ try:
             page=browser.new_page(viewport={'width':width,'height':height})
             errors=[]
             page.on('pageerror',lambda error:errors.append(str(error)))
+            page.on('console',lambda message:errors.append(message.text) if message.type=='error' else None)
             page.goto('http://127.0.0.1:8765',wait_until='domcontentloaded')
             page.wait_for_timeout(1800)
             if width in (1440,390) and os.environ.get('CAPTURE_PREVIEWS'):
@@ -21,23 +22,58 @@ try:
                     page.wait_for_timeout(250)
                     page.screenshot(path=str(root/f'preview-{width}-{section}.png'))
             assert page.locator('#dest-grid [data-destination-id]').count()>20,errors
-            assert page.locator('#featured-grid button').count()==6
+            assert page.locator('#featured-grid button').count()==8
+            assert page.locator('#destination-carousel .carousel-card').count()==8
+            assert page.locator('#trip-grid .trip-card').count()==5
+            assert page.locator('#faq details').count()==6
             assert page.locator('#gallery-grid button').count()>0
             assert page.locator('body').evaluate('(el)=>el.scrollWidth<=innerWidth+2'),f'horizontal overflow {width}'
             if width<1024:
                 page.locator('#menu-open').click()
                 assert 'open' in page.locator('#mobile-menu').get_attribute('class')
-                page.locator('#mobile-menu a[href="#explore"]').click()
+                page.keyboard.press('Escape')
+                assert 'open' not in page.locator('#mobile-menu').get_attribute('class')
+                assert page.evaluate('document.activeElement.id')=='menu-open'
+                page.locator('#menu-open').click()
+                page.locator('#mobile-menu a[href="#map"]').click()
                 assert page.locator('#mobile-menu').get_attribute('class').find('open')<0
             else:
-                page.locator('nav a[href="#about"]').first.click()
-                assert page.url.endswith('#about')
+                page.locator('.mega-trigger[data-mega="discover"]').click()
+                assert page.locator('#mega-panel').is_visible()
+                page.locator('#mega-panel [data-discover-cat="beach"]').click()
+                assert page.locator('#filter-tabs [data-cat="beach"]').get_attribute('aria-pressed')=='true'
+                page.locator('.mega-trigger[data-mega="plan"]').click()
+                assert page.locator('#mega-panel #mega-plan').is_visible()
+                page.locator('#mega-panel a[href="#trips"]').click()
+                assert page.url.endswith('#trips')
+            page.locator('#featured-grid [data-mood-cat="culture"]').click()
+            assert page.locator('#filter-tabs [data-cat="culture"]').get_attribute('aria-pressed')=='true'
+            page.locator('#carousel-next').click()
+            page.wait_for_timeout(250)
+            assert page.locator('#destination-carousel').evaluate('(el)=>el.scrollLeft>0')
+            page.locator('#trip-grid button').first.focus()
+            page.keyboard.press('Enter')
+            assert 'hidden' not in page.locator('#trip-modal').get_attribute('class')
+            assert page.locator('#trip-modal-stops li').count()>0
+            page.keyboard.press('Escape')
+            assert 'hidden' in page.locator('#trip-modal').get_attribute('class')
+            assert page.locator('#faq details').first.get_attribute('open') is None
+            page.locator('#faq details summary').first.click()
+            assert page.locator('#faq details').first.get_attribute('open') is not None
+            if width==1440:
+                page.emulate_media(reduced_motion='reduce')
+                assert page.evaluate("matchMedia('(prefers-reduced-motion: reduce)').matches")
+                assert page.locator('.hero-section>img').evaluate('(el)=>getComputedStyle(el).animationName')=='none'
+                page.emulate_media(reduced_motion='no-preference')
             page.locator('#filter-tabs [data-cat="dive"]').click()
             assert page.locator('#dest-grid [data-destination-id]').count()>0
             page.locator('#dest-search').fill('Coral Garden')
             assert page.locator('#dest-grid [data-destination-id]').count()==1
+            assert page.locator('#dest-count').inner_text()=='1 destination'
             page.locator('#dest-search').fill('')
-            page.locator('#featured-grid button[data-category="nature"]').click()
+            page.locator('#dest-reset').click()
+            assert page.locator('#filter-tabs [data-cat="all"]').get_attribute('aria-pressed')=='true'
+            page.locator('#featured-grid button[data-mood-cat="nature"]').first.click()
             assert page.locator('#filter-tabs [data-cat="nature"]').get_attribute('aria-pressed')=='true'
             page.locator('#filter-tabs [data-cat="dive"]').click()
             page.locator('#dest-grid [data-destination-id]').first.click()
@@ -47,6 +83,7 @@ try:
             page.locator('#sources-modal-close').click()
             page.locator('#gallery-grid button').first.click(force=True)
             assert 'hidden' not in page.locator('#lightbox').get_attribute('class')
+            assert page.locator('#gallery-grid img').first.evaluate('(el)=>el.complete && el.naturalWidth>0')
             page.locator('#lightbox-next').click()
             page.locator('#lightbox-close').click()
             page.locator('#gallery-tabs [data-gcat="nature"]').click()

@@ -86,14 +86,14 @@ const broadLocation='Puerto Galera, Oriental Mindoro';
 function locationOf(d){return d.area?d.area+', Puerto Galera, Oriental Mindoro':broadLocation}
 function searchURL(d){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent((d?d.name+' ':'Puerto Galera ')+(d?'Puerto Galera Oriental Mindoro':'Oriental Mindoro'))}
 function directionsURL(d){const params=new URLSearchParams({api:'1',destination:(d?d.name+' ':'Puerto Galera ')+'Puerto Galera Oriental Mindoro'});if(visitorPosition)params.set('origin',visitorPosition.lat+','+visitorPosition.lng);return 'https://www.google.com/maps/dir/?'+params.toString()}
-function selectDestination(d){selected=d;$('selected-map-name').textContent=d.name;$('selected-map-location').textContent='Location: '+locationOf(d);$('selected-map-link').href=searchURL(d);$('selected-map-link').setAttribute('aria-label','Search Google Maps for '+d.name+' in a new tab; exact pin not verified');updateDirections()}
+function selectDestination(d){selected=d;const panel=$('map-panel');panel.classList.add('changing');window.setTimeout(()=>panel.classList.remove('changing'),180);$('selected-map-name').textContent=d.name;$('selected-map-location').textContent='Location: '+locationOf(d);$('selected-map-link').href=searchURL(d);$('selected-map-link').setAttribute('aria-label','Search Google Maps for '+d.name+' in a new tab; exact pin not verified');updateDirections()}
 function updateDirections(){const link=$('directions-link');link.classList.toggle('hidden',!visitorPosition);if(visitorPosition){link.href=directionsURL(selected);link.setAttribute('aria-label','Open Google Maps directions from my current position to '+(selected?selected.name:'Puerto Galera')+' in a new tab; destination is a search, not a verified exact pin')}}
 function setTabs(group,key,value){document.querySelectorAll('#'+group+' [data-'+key+']').forEach(b=>{const active=b.dataset[key]===value||b.getAttribute('data-'+key.replace(/([A-Z])/g,'-$1').toLowerCase())===value;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))})}
 
 /* ===== Destinations ===== */
 function renderDestinations(){
 const query=$('dest-search').value.trim().toLowerCase(),shown=destinations.filter(d=>(currentFilter==='all'||d.cat===currentFilter)&&(!query||d.name.toLowerCase().includes(query)||d.desc.toLowerCase().includes(query)));
-const grid=$('dest-grid');grid.replaceChildren();$('no-results').classList.toggle('hidden',shown.length>0);
+const grid=$('dest-grid');grid.replaceChildren();$('no-results').classList.toggle('hidden',shown.length>0);$('dest-count').textContent=shown.length+' '+(shown.length===1?'destination':'destinations');$('dest-reset').disabled=currentFilter==='all'&&!query;
 shown.forEach(d=>{
 const card=document.createElement('article');card.className='destination-card tropical-card';card.dataset.category=d.cat;
 const visual=document.createElement('div');visual.className='destination-visual';
@@ -111,15 +111,32 @@ const srcBtn=document.createElement('button');srcBtn.type='button';srcBtn.classN
 actions.append(guide,maps);info.append(title,loc,desc,highlights,actions,srcBtn);card.append(visual,info);grid.append(card)
 })}
 
+const moodOptions=[
+ ['Beach Escape','beach','A little time beside the water','sun'],['Dive Adventure','dive','See what lies beneath the surface','waves'],
+ ['Nature Explorer','nature','Waterfalls, trails, and green places','trees'],['Outdoor Adventure','leisure','Find an active island escape','compass'],
+ ['Culture & Heritage','culture','Explore heritage and community places','landmark'],['Scenic Getaway','beach','Coastal views and quieter coves','sunset'],
+ ['Family Discovery','nature','Choose a nature stop to explore together','map'],['Relax & Unwind','leisure','Slow down by the sea','anchor']
+];
+const tripPlans=[
+ {name:'Puerto Galera Highlights',stops:['MUEL01','CORAL01','TUKU01']},
+ {name:'Beach Weekend',stops:['CELY01','BULA01','ENCE01']},
+ {name:'Dive Escape',stops:['CORAL01','CLAM01','SABW01']},
+ {name:'Nature Discovery',stops:['TUKU01','TALI01','ANIN01']},
+ {name:'Culture & Heritage',stops:['MUEL01','ESCA01','AMBA01']}
+];
+let tripModalTrigger=null;
+function applyDestinationFilter(category,scroll=true){currentFilter=category;$('dest-search').value='';setTabs('filter-tabs','cat',category);renderDestinations();if(scroll)$('explore').scrollIntoView({behavior:'smooth',block:'start'})}
 function renderFeatured(){
- const categories=[
-  ['beach','Beaches','Find your place by the water','sun'],['dive','Diving','Explore vibrant marine life','waves'],
-  ['nature','Nature','Follow the island’s wild side','trees'],['culture','Culture & Heritage','Meet the stories of Puerto Galera','landmark'],
-  ['leisure','Island Leisure','Make every day an adventure','sailboat'],['education','Educational Tourism','Learn from the living landscape','graduation-cap']
- ];
  const grid=$('featured-grid');grid.replaceChildren();
- categories.forEach(([cat,label,line,icon])=>{const d=destinations.find(item=>item.cat===cat);if(!d)return;const card=document.createElement('button');card.type='button';card.className='featured-card';card.dataset.category=cat;card.setAttribute('aria-label','Explore '+label);const img=document.createElement('img');img.src=d.img;img.alt='';img.loading='lazy';const content=document.createElement('span');content.className='featured-copy';content.innerHTML='<span class="featured-icon"><i data-lucide="'+icon+'" aria-hidden="true"></i></span><strong>'+label+'</strong><span>'+line+'</span><span class="featured-action">Explore <span aria-hidden="true">↗</span></span>';card.append(img,content);card.addEventListener('click',()=>{currentFilter=cat;setTabs('filter-tabs','cat',cat);renderDestinations();$('explore').scrollIntoView({behavior:'smooth'})});grid.append(card)});
+ moodOptions.forEach(([label,category,description,icon])=>{const destination=destinations.find(item=>item.cat===category);if(!destination)return;const card=document.createElement('button');card.type='button';card.className='mood-card';card.dataset.moodCat=category;card.setAttribute('aria-label','Explore '+label+' destinations');const image=document.createElement('img');image.src=destination.img;image.alt='';image.loading='lazy';const copy=document.createElement('span');copy.className='mood-copy';const glyph=document.createElement('i');glyph.className='mood-icon';glyph.dataset.lucide=icon;glyph.setAttribute('aria-hidden','true');const title=document.createElement('strong');title.textContent=label;const text=document.createElement('span');text.textContent=description;copy.append(glyph,title,text);card.append(image,copy);grid.append(card)});
 }
+function renderDestinationCarousel(){
+ const featuredIds=['CORAL01','CELY01','TUKU01','MUEL01','ESCA01','BULA01','MANG01','ENCE01'];const rail=$('destination-carousel');rail.replaceChildren();
+ featuredIds.forEach(id=>{const destination=destinations.find(item=>item.id===id);if(!destination)return;const card=document.createElement('article');card.className='carousel-card';const image=document.createElement('img');image.src=destination.img;image.alt=destination.alt;image.loading='lazy';const copy=document.createElement('div');copy.className='carousel-card-copy';const category=document.createElement('p');category.className='section-eyebrow';category.textContent=catLabels[destination.cat];const title=document.createElement('h3');title.textContent=destination.name;const location=document.createElement('p');location.className='destination-location';location.textContent=locationOf(destination);const teaser=document.createElement('p');teaser.textContent=destination.desc;const actions=document.createElement('div');actions.className='carousel-card-actions';const guide=document.createElement('button');guide.type='button';guide.className='btn-primary px-4 py-2';guide.textContent='View Guide';guide.addEventListener('click',()=>openModal(destination.id,guide));const maps=document.createElement('a');maps.href=searchURL(destination);maps.target='_blank';maps.rel='noopener noreferrer';maps.className='map-action-btn px-4 py-2';maps.textContent='Maps';maps.addEventListener('click',()=>selectDestination(destination));actions.append(guide,maps);copy.append(category,title,location,teaser,actions);card.append(image,copy);rail.append(card)});
+}
+function openTripModal(index,trigger){const plan=tripPlans[index];if(!plan)return;tripModalTrigger=trigger||document.activeElement;$('trip-modal-title').textContent=plan.name;const stops=$('trip-modal-stops');stops.replaceChildren();plan.stops.forEach((id,indexInPlan)=>{const destination=destinations.find(item=>item.id===id);if(!destination)return;const item=document.createElement('li');const name=document.createElement('strong');name.textContent=destination.name;const place=document.createElement('span');place.textContent=locationOf(destination)+' · '+catLabels[destination.cat];const guide=document.createElement('button');guide.type='button';guide.className='trip-stop-guide';guide.textContent='View guide';guide.addEventListener('click',()=>{closeTripModal();openModal(destination.id,tripModalTrigger)});item.append(name,place,guide);stops.append(item)});$('trip-modal').classList.remove('hidden');document.body.style.overflow='hidden';$('trip-modal-close').focus()}
+function closeTripModal(){if($('trip-modal').classList.contains('hidden'))return;$('trip-modal').classList.add('hidden');document.body.style.overflow='';if(tripModalTrigger?.isConnected)tripModalTrigger.focus()}
+function renderTrips(){const grid=$('trip-grid');grid.replaceChildren();tripPlans.forEach((plan,index)=>{const destination=destinations.find(item=>item.id===plan.stops[0]);const card=document.createElement('article');card.className='trip-card';const image=document.createElement('img');image.src=destination.img;image.alt=destination.alt;image.loading='lazy';const body=document.createElement('div');const count=document.createElement('p');count.className='section-eyebrow';count.textContent='SUGGESTED PLACES · '+plan.stops.length;const title=document.createElement('h3');title.textContent=plan.name;const button=document.createElement('button');button.type='button';button.className='trip-open';button.textContent='View suggested trip';button.addEventListener('click',()=>openTripModal(index,button));body.append(count,title,button);card.append(image,body);grid.append(card)})}
 
 function openModal(id,trigger){const d=destinations.find(item=>item.id===id);if(!d)return;selectDestination(d);modalTrigger=trigger||document.activeElement;$('modal-img').src=d.img;$('modal-img').alt=d.alt;$('modal-cat').textContent=catLabels[d.cat];$('modal-name').textContent=d.name;$('modal-desc').textContent=d.desc;$('modal-highlights').textContent=d.highlights?'Highlights: '+d.highlights:'';$('modal-location').textContent='Location: '+locationOf(d);$('modal-tips').textContent='Visitor tips: Check current conditions with the Tourism Office, bring water and sun protection, respect local communities and protected areas, and follow site-specific safety guidance.';$('modal-map-link').href=searchURL(d);$('modal-map-link').setAttribute('aria-label','Search Google Maps for '+d.name+' in a new tab; exact pin not verified');$('dest-modal').classList.remove('hidden');document.body.style.overflow='hidden';$('modal-x').focus();
 // Store current dest for sources button
@@ -235,7 +252,7 @@ function renderCreditsSection(){
 }
 
 /* ===== Gallery ===== */
-function renderGallery(){filteredGallery=galleryFilter==='all'?galleryItems:galleryItems.filter(g=>g.cat===galleryFilter);$('gallery-grid').replaceChildren();const rows=[[],[],[],[]];filteredGallery.forEach((g,i)=>rows[i%4].push({g,i}));rows.forEach((row,rowIndex)=>{const viewport=document.createElement('div');viewport.className='marquee-viewport';const track=document.createElement('div');track.className='marquee-track'+(rowIndex%2?' reverse':'');const repeated=[...row,...row];repeated.forEach(({g,i})=>{const item=document.createElement('div');item.className='marquee-item';const btn=document.createElement('button');btn.type='button';btn.className='block w-full rounded-xl overflow-hidden focus-visible:outline';btn.setAttribute('aria-label','View '+g.caption);const img=document.createElement('img');img.src=g.src;img.alt=g.alt;img.loading='lazy';img.className='w-full';btn.append(img);btn.addEventListener('click',()=>{lightboxTrigger=btn;lightboxIdx=i;showLightbox()});const caption=document.createElement('p');caption.className='text-sm font-semibold mt-2';caption.textContent=g.caption;const credit=document.createElement('p');credit.className='credit mt-1';credit.textContent='Image source: Pexels';item.append(btn,caption,credit);track.append(item)});viewport.append(track);$('gallery-grid').append(viewport)})}
+function renderGallery(){filteredGallery=galleryFilter==='all'?galleryItems:galleryItems.filter(g=>g.cat===galleryFilter);const grid=$('gallery-grid');grid.replaceChildren();filteredGallery.forEach((g,i)=>{const item=document.createElement('article');item.className='gallery-tile';const btn=document.createElement('button');btn.type='button';btn.className='gallery-image-button';btn.setAttribute('aria-label','View '+g.caption);const img=document.createElement('img');img.src=g.src;img.alt=g.alt;img.loading='lazy';btn.append(img);btn.addEventListener('click',()=>{lightboxTrigger=btn;lightboxIdx=i;showLightbox()});const caption=document.createElement('p');caption.className='gallery-caption';caption.textContent=g.caption;const credit=document.createElement('p');credit.className='credit';credit.textContent='Image source: Pexels';item.append(btn,caption,credit);grid.append(item)})}
 function showLightbox(){const g=filteredGallery[lightboxIdx];if(!g)return;$('lightbox-img').src=g.src;$('lightbox-img').alt=g.alt;$('lightbox-caption').textContent=g.caption+' · '+g.cat.charAt(0).toUpperCase()+g.cat.slice(1);$('lightbox').classList.remove('hidden');document.body.style.overflow='hidden';$('lightbox-close').focus()}
 function closeLightbox(){if($('lightbox').classList.contains('hidden'))return;$('lightbox').classList.add('hidden');document.body.style.overflow='';if(lightboxTrigger?.isConnected)lightboxTrigger.focus()}
 function moveLightbox(step){lightboxIdx=(lightboxIdx+step+filteredGallery.length)%filteredGallery.length;showLightbox()}
@@ -247,12 +264,12 @@ function closeMenu(){$('mobile-menu').classList.remove('open');$('menu-open').se
 
 /* ===== Init ===== */
 document.addEventListener('DOMContentLoaded',()=>{
-renderFeatured();renderDestinations();renderGallery();renderCreditsSection();if(window.lucide)lucide.createIcons();
+renderFeatured();renderDestinationCarousel();renderTrips();renderDestinations();renderGallery();renderCreditsSection();if(window.lucide)lucide.createIcons();
 ['CORAL01','MUEL01','TUKU01','ESCA01','AMBA01','BACL01'].forEach(id=>{const d=destinations.find(x=>x.id===id),b=document.createElement('button');b.type='button';b.textContent=d.name;b.className='qr-sample-btn px-4 py-2 text-sm';b.addEventListener('click',()=>{$('qr-input').value=id;lookupQR()});$('qr-samples').append(b)});
 if(window.L){map=L.map('plan-map',{scrollWheelZoom:false}).setView([13.50,120.96],11);map.attributionControl.setPrefix(false);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'}).addTo(map)}
 if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}));document.querySelectorAll('.fade-in').forEach(el=>observer.observe(el))}else document.querySelectorAll('.fade-in').forEach(el=>el.classList.add('visible'));
 const navLinks=[...document.querySelectorAll('.desktop-nav a[href^="#"]')];const sections=navLinks.map(link=>$(link.hash.slice(1))).filter(Boolean);
-const updateNavigation=()=>{let active='home';for(const section of sections){if(section.getBoundingClientRect().top<=140)active=section.id}navLinks.forEach(link=>{const on=link.hash==='#'+active;link.classList.toggle('active-link',on);if(on)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current')});$('back-to-top').classList.toggle('visible',window.scrollY>650)};
+const updateNavigation=()=>{let active='home';for(const section of sections){if(section.getBoundingClientRect().top<=140)active=section.id}navLinks.forEach(link=>{const on=link.hash==='#'+active;link.classList.toggle('active-link',on);if(on)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current')});document.querySelector('.glass-nav').classList.toggle('scrolled',window.scrollY>24);$('back-to-top').classList.toggle('visible',window.scrollY>650)};
 window.addEventListener('scroll',updateNavigation,{passive:true});updateNavigation();
 
 });
@@ -267,8 +284,15 @@ navigator.geolocation.getCurrentPosition(position=>{visitorPosition={lat:positio
 /* ===== Event Listeners ===== */
 $('filter-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(!b)return;currentFilter=b.dataset.cat;setTabs('filter-tabs','cat',currentFilter);renderDestinations()});
 $('dest-search').addEventListener('input',renderDestinations);
+document.addEventListener('click',e=>{const control=e.target.closest('[data-discover-cat],[data-story-cat],[data-filter-feature],[data-mood-cat]');if(!control)return;e.preventDefault();applyDestinationFilter(control.dataset.discoverCat||control.dataset.storyCat||control.dataset.filterFeature||control.dataset.moodCat)});
+ $('dest-reset').addEventListener('click',()=>applyDestinationFilter('all',false));
+ $('carousel-prev').addEventListener('click',()=>$('destination-carousel').scrollBy({left:-$('destination-carousel').clientWidth*.8,behavior:'smooth'}));
+ $('carousel-next').addEventListener('click',()=>$('destination-carousel').scrollBy({left:$('destination-carousel').clientWidth*.8,behavior:'smooth'}));
+ $('trip-modal-close').addEventListener('click',closeTripModal);$('trip-modal-done').addEventListener('click',closeTripModal);$('trip-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeTripModal()});
+ document.querySelectorAll('.mega-trigger').forEach(trigger=>trigger.addEventListener('click',()=>{const panel=$('mega-panel'),wasOpen=trigger.getAttribute('aria-expanded')==='true';document.querySelectorAll('.mega-trigger').forEach(item=>item.setAttribute('aria-expanded','false'));document.querySelectorAll('.mega-content').forEach(item=>item.classList.add('hidden'));panel.classList.toggle('hidden',wasOpen);if(!wasOpen){trigger.setAttribute('aria-expanded','true');$('mega-'+trigger.dataset.mega).classList.remove('hidden')}}));
+ $('mega-panel').addEventListener('click',e=>{if(e.target.closest('a')){document.querySelectorAll('.mega-trigger').forEach(item=>item.setAttribute('aria-expanded','false'));$('mega-panel').classList.add('hidden')}});
+ document.addEventListener('click',e=>{if(e.target.closest('.desktop-nav,.mega-panel'))return;$('mega-panel').classList.add('hidden');document.querySelectorAll('.mega-trigger').forEach(item=>item.setAttribute('aria-expanded','false'))});
 document.addEventListener('click',e=>{const guide=e.target.closest('#dest-grid [data-destination-id]');if(guide){e.preventDefault();const d=destinations.find(item=>item.id===guide.dataset.destinationId);if(d){guide.setAttribute('aria-pressed','true');openModal(d.id,guide)}return}const source=e.target.closest('#dest-grid [data-source-id]');if(source){e.preventDefault();const d=destinations.find(item=>item.id===source.dataset.sourceId);if(d)openSourcesModal(d)}});document.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const control=e.target.closest('#dest-grid [data-destination-id],#dest-grid [data-source-id]');if(!control)return;e.preventDefault();control.click()});
-document.querySelectorAll('[data-filter-feature]').forEach(b=>b.addEventListener('click',()=>{currentFilter=b.dataset.filterFeature;setTabs('filter-tabs','cat',currentFilter);renderDestinations();$('explore').scrollIntoView({behavior:'smooth'})}));
 $('gallery-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-gcat]');if(!b)return;galleryFilter=b.dataset.gcat;setTabs('gallery-tabs','gcat',galleryFilter);renderGallery()});
 $('modal-x').addEventListener('click',closeModal);$('modal-close').addEventListener('click',closeModal);$('modal-inquire').addEventListener('click',closeModal);$('dest-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
 $('sources-modal-close').addEventListener('click',closeSourcesModal);$('sources-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeSourcesModal()});
@@ -277,13 +301,14 @@ $('lightbox-close').addEventListener('click',closeLightbox);$('lightbox-prev').a
 document.addEventListener('keydown',e=>{
  if(e.key==='Escape'){
   if(!$('sources-modal').classList.contains('hidden'))closeSourcesModal();
+    else if(!$('trip-modal').classList.contains('hidden'))closeTripModal();
   else if(!$('lightbox').classList.contains('hidden'))closeLightbox();
   else if(!$('dest-modal').classList.contains('hidden'))closeModal();
-  else closeMenu()
+  else if($('mobile-menu').classList.contains('open')){closeMenu();$('menu-open').focus()}
  }
  if(!$('lightbox').classList.contains('hidden')&&e.key==='ArrowLeft')moveLightbox(-1);
  if(!$('lightbox').classList.contains('hidden')&&e.key==='ArrowRight')moveLightbox(1);
- const dialog=!$('sources-modal').classList.contains('hidden')?$('sources-modal'):!$('dest-modal').classList.contains('hidden')?$('dest-modal'):!$('lightbox').classList.contains('hidden')?$('lightbox'):null;
+ const dialog=!$('sources-modal').classList.contains('hidden')?$('sources-modal'):!$('trip-modal').classList.contains('hidden')?$('trip-modal'):!$('dest-modal').classList.contains('hidden')?$('dest-modal'):!$('lightbox').classList.contains('hidden')?$('lightbox'):null;
  if(dialog&&e.key==='Tab'){const elements=[...dialog.querySelectorAll('button,a[href]')].filter(el=>el.getClientRects().length);if(!elements.length)return;const first=elements[0],last=elements.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}
 });
 

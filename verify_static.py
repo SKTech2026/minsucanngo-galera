@@ -13,10 +13,11 @@ class PageParser(HTMLParser):
 page=Path('index.html').read_text(encoding='utf-8')
 data=Path('js/destinations.js').read_text(encoding='utf-8')
 app=Path('js/app.js').read_text(encoding='utf-8')
+css=Path('css/styles.css').read_text(encoding='utf-8')
 parser=PageParser();parser.feed(page)
-assets=set(re.findall(r'assets/(?:logos|images)/[A-Za-z0-9_.-]+',page+data))
+assets=set(re.findall(r'(?:\.\./)?assets/(?:logos|images)/[A-Za-z0-9_.-]+',page+data+css))
 assert len(parser.ids)==len(set(parser.ids)), 'duplicate IDs'
 assert all(anchor in parser.ids for anchor in parser.anchors), 'broken internal links'
-assert all(Path(asset).exists() for asset in assets), 'missing local assets'
+assert all(Path(asset.replace('../','')).exists() for asset in assets), 'missing local assets'
 assert not any(value in page+data+app for value in ('canva://','/_sdk/','dataSdk')), 'Canva dependency found'
 print('Static checks PASS:',len(parser.ids),'IDs,',len(parser.anchors),'anchors,',len(assets),'assets')
