@@ -262,7 +262,42 @@ function renderCreditsSection(){
 }
 
 /* ===== Gallery ===== */
-function renderGallery(){filteredGallery=galleryFilter==='all'?galleryItems:galleryItems.filter(g=>g.cat===galleryFilter);const grid=$('gallery-grid');grid.classList.add('is-refreshing');grid.replaceChildren();filteredGallery.forEach((g,i)=>{const item=document.createElement('article');item.className='gallery-tile';const btn=document.createElement('button');btn.type='button';btn.className='gallery-image-button';btn.setAttribute('aria-label','View '+g.caption);const img=document.createElement('img');img.src=g.src;img.alt=g.alt;img.loading='lazy';btn.append(img);btn.addEventListener('click',()=>{lightboxTrigger=btn;lightboxIdx=i;showLightbox()});const caption=document.createElement('p');caption.className='gallery-caption';caption.textContent=g.caption;const credit=document.createElement('p');credit.className='credit';credit.textContent='Image source: Pexels';item.append(btn,caption,credit);grid.append(item)});window.requestAnimationFrame(()=>{grid.classList.remove('is-refreshing');if(gsapMotionEnabled&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches)window.gsap.fromTo(grid.children,{autoAlpha:0,y:8},{autoAlpha:1,y:0,duration:.32,stagger:.035,ease:'power2.out',overwrite:true})})}
+function renderGallery(){
+  const allMatches = galleryFilter === 'all' ? galleryItems : galleryItems.filter(g => g.cat === galleryFilter);
+  filteredGallery = allMatches.slice(0, 8);
+  const grid = $('gallery-grid');
+  grid.classList.add('is-refreshing');
+  grid.replaceChildren();
+  filteredGallery.forEach((g, i) => {
+    const item = document.createElement('article');
+    item.className = 'gallery-tile';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'gallery-image-button';
+    btn.setAttribute('aria-label', 'View ' + g.caption);
+    const img = document.createElement('img');
+    img.src = g.src;
+    img.alt = g.alt;
+    img.loading = 'lazy';
+    const caption = document.createElement('span');
+    caption.className = 'gallery-caption';
+    caption.textContent = g.caption;
+    btn.append(img, caption);
+    btn.addEventListener('click', () => {
+      lightboxTrigger = btn;
+      lightboxIdx = i;
+      showLightbox();
+    });
+    item.append(btn);
+    grid.append(item);
+  });
+  window.requestAnimationFrame(() => {
+    grid.classList.remove('is-refreshing');
+    if (gsapMotionEnabled && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.gsap.fromTo(grid.children, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: .32, stagger: .035, ease: 'power2.out', overwrite: true });
+    }
+  });
+}
 function showLightbox(){const g=filteredGallery[lightboxIdx];if(!g)return;const lightbox=$('lightbox'),wasOpen=!lightbox.classList.contains('hidden');$('lightbox-img').src=g.src;$('lightbox-img').alt=g.alt;$('lightbox-caption').textContent=g.caption+' · '+g.cat.charAt(0).toUpperCase()+g.cat.slice(1);lightbox.classList.remove('hidden');syncModalScrollLock();if(gsapMotionEnabled&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){const gsap=window.gsap;if(!wasOpen)gsap.fromTo(lightbox,{autoAlpha:0},{autoAlpha:1,duration:.22,ease:'power1.out',overwrite:true});gsap.fromTo('#lightbox-img',{autoAlpha:0,scale:.96},{autoAlpha:1,scale:1,duration:.32,ease:'power2.out',overwrite:true});gsap.fromTo('#lightbox-caption',{autoAlpha:0,y:8},{autoAlpha:1,y:0,duration:.28,delay:.04,ease:'power2.out',overwrite:true})}else window.requestAnimationFrame(()=>lightbox.classList.add('is-open'));$('lightbox-close').focus()}
 let lightboxCloseTimer=0;
 function closeLightbox(){const lightbox=$('lightbox');if(lightbox.classList.contains('hidden'))return;window.clearTimeout(lightboxCloseTimer);const finish=()=>{lightbox.classList.add('hidden');lightbox.classList.remove('is-open');syncModalScrollLock();if(lightboxTrigger?.isConnected)lightboxTrigger.focus()};if(gsapMotionEnabled&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){window.gsap.killTweensOf([lightbox,$('lightbox-img'),$('lightbox-caption')]);window.gsap.timeline({onComplete:finish}).to(['#lightbox-img','#lightbox-caption'],{autoAlpha:0,scale:.97,y:6,duration:.16,stagger:.02,ease:'power1.in'}).to(lightbox,{autoAlpha:0,duration:.18,ease:'power1.in'},0);return}lightbox.classList.remove('is-open');const duration=window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:220;lightboxCloseTimer=window.setTimeout(finish,duration)}
