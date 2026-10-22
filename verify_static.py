@@ -4,11 +4,13 @@ import re
 
 class PageParser(HTMLParser):
     def __init__(self):
-        super().__init__(); self.ids=[]; self.anchors=[]
+        super().__init__(); self.ids=[]; self.anchors=[]; self.local_refs=[]
     def handle_starttag(self,tag,attrs):
         values=dict(attrs)
         if 'id' in values: self.ids.append(values['id'])
         if tag=='a' and values.get('href','').startswith('#'): self.anchors.append(values['href'][1:])
+        ref=values.get('src') or (values.get('href') if tag=='link' else None)
+        if ref and not ref.startswith(('http://','https://','#','data:','mailto:','tel:')): self.local_refs.append(ref)
 
 page=Path('index.html').read_text(encoding='utf-8')
 data=Path('js/destinations.js').read_text(encoding='utf-8')
@@ -19,5 +21,6 @@ assets=set(re.findall(r'(?:\.\./)?assets/(?:logos|images)/[A-Za-z0-9_.-]+',page+
 assert len(parser.ids)==len(set(parser.ids)), 'duplicate IDs'
 assert all(anchor in parser.ids for anchor in parser.anchors), 'broken internal links'
 assert all(Path(asset.replace('../','')).exists() for asset in assets), 'missing local assets'
+assert all(Path(ref).exists() for ref in parser.local_refs), 'missing local script, stylesheet, or image reference'
 assert not any(value in page+data+app for value in ('canva://','/_sdk/','dataSdk')), 'Canva dependency found'
-print('Static checks PASS:',len(parser.ids),'IDs,',len(parser.anchors),'anchors,',len(assets),'assets')
+print('Static checks PASS:',len(parser.ids),'IDs,',len(parser.anchors),'anchors,',len(assets),'assets,',len(parser.local_refs),'local references')

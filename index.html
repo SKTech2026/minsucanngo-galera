@@ -11,6 +11,7 @@
   <meta property="og:image" content="assets/images/puerto-galera-hero-beach-1450353.jpg">
   <link rel="icon" type="image/png" href="assets/logos/minsucanngo-logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="vendor/swiper-bundle.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&amp;family=Poppins:wght@400;500;600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" defer></script>
   <link rel="stylesheet" href="css/styles.css">
@@ -21,6 +22,7 @@
   
  </head>
  <body class="w-full" style="background: rgb(255, 253, 247);">
+  <div id="reading-progress" aria-hidden="true"></div>
   <!-- NAV -->
   <header>
    <nav class="glass-nav fixed z-40 top-0 left-0 w-full" style="border-radius:0 0 1rem 1rem" aria-label="Main navigation">
@@ -48,34 +50,35 @@
     <img class="absolute inset-0 w-full h-full object-cover" fetchpriority="high" src="assets/images/puerto-galera-hero-beach-1450353.jpg" alt="Serene beach with turquoise waters, white sand, and palm trees under a sunny sky">
     <div class="hero-overlay absolute inset-0"></div>
     <div class="hero-content relative max-w-5xl px-5">
-     <div class="hero-logos flex items-center justify-center gap-4 mb-7">
+     <div class="hero-logos flex items-center justify-center gap-4 mb-7" data-hero-step="logos">
       <img class=" seal-crop w-16 h-16 object-contain" loading="lazy" src="assets/logos/puerto-galera-seal.png" alt="Official seal of the Municipality of Puerto Galera, Oriental Mindoro"> <img class=" seal-crop w-16 h-16 object-contain" loading="lazy" src="assets/logos/minsu-seal.png" alt="Official seal of Mindoro State University"> <img class=" w-16 h-16 object-contain" loading="lazy" src="assets/logos/minsucanngo-logo.png" alt="MinSUcanNGo Galera colorful brand logo">
      </div>
-     <p class="hero-eyebrow">WELCOME TO PUERTO GALERA</p>
-     <h1 class="hero-title mb-3 drop-shadow-lg">MinSUcanNGo Galera</h1>
-    <p class="hero-tagline font-bold mb-4">Scan Smart. Discover Galera.</p>
-     <p class="hero-intro max-w-2xl mx-auto mb-8 leading-relaxed">Your digital companion to Puerto Galera's beaches, dive sites, waterfalls, culture, and island adventures.</p>
-     <div class="hero-actions flex flex-wrap justify-center gap-3">
-      <a href="#explore" class="btn-sunset px-6 py-3">Explore Galera</a> <a href="#plan" class="btn-glass px-6 py-3">Plan My Trip</a> <a href="#qr-guide" class="hero-qr-link btn-primary px-6 py-3">Scan QR Guide</a>
+    <p class="hero-eyebrow" data-hero-step="eyebrow">WELCOME TO PUERTO GALERA</p>
+    <h1 class="hero-title mb-3 drop-shadow-lg" data-hero-step="title">MinSUcanNGo Galera</h1>
+    <p class="hero-tagline font-bold mb-4" data-hero-step="tagline">Scan Smart. Discover Galera.</p>
+    <p class="hero-intro max-w-2xl mx-auto mb-8 leading-relaxed" data-hero-step="intro">A digital guide to Puerto Galera's marine life, tropical beaches, waterfalls, heritage, and island experiences.</p>
+    <div class="hero-actions flex flex-wrap justify-center gap-3" data-hero-step="actions">
+     <a href="#explore" class="btn-sunset px-6 py-3">Explore Puerto Galera</a> <a href="#plan" class="btn-glass px-6 py-3">Plan My Trip</a> <a href="#qr-guide" class="hero-qr-link">Scan QR Guide</a>
      </div>
-     <a href="#contact" class="hero-contact inline-block mt-4">Contact Tourism Office <span aria-hidden="true">↗</span></a>
-     <p class="hero-award inline-flex items-center gap-2 mt-7 px-5 py-2 rounded-full font-bold"><i data-lucide="award" aria-hidden="true"></i> Philippines' No. 1 Dive Destination for 2025–2027</p>
-     <p class="text-white/80 text-xs mt-2">Source: Experience Puerto Galera</p>
+    <p class="hero-award inline-flex items-center gap-2 mt-7 px-5 py-2 rounded-full font-bold" data-hero-step="award"><i data-lucide="award" aria-hidden="true"></i><span>Philippines' No. 1 Dive Destination for 2025–2027</span><a href="https://www.experiencepuertogalera.com/" target="_blank" rel="noopener noreferrer">Source</a></p>
     </div>
-    <div class="hero-features discovery-rail" aria-label="Discover Puerto Galera by category"><button type="button" data-discover-cat="beach"><i data-lucide="sun"></i> Beaches</button><button type="button" data-discover-cat="dive"><i data-lucide="waves"></i> Diving</button><button type="button" data-discover-cat="nature"><i data-lucide="trees"></i> Nature</button><button type="button" data-discover-cat="culture"><i data-lucide="landmark"></i> Culture</button><button type="button" data-discover-cat="leisure"><i data-lucide="compass"></i> Adventure</button></div>
+      <div class="hero-features discovery-rail" aria-label="Discover Puerto Galera by category" data-hero-step="rail"><button type="button" data-discover-cat="beach"><i data-lucide="sun" aria-hidden="true"></i> Beaches</button><button type="button" data-discover-cat="dive"><i data-lucide="waves" aria-hidden="true"></i> Diving</button><button type="button" data-discover-cat="nature"><i data-lucide="trees" aria-hidden="true"></i> Nature</button><button type="button" data-discover-cat="culture"><i data-lucide="landmark" aria-hidden="true"></i> Culture</button><button type="button" data-discover-cat="leisure"><i data-lucide="compass" aria-hidden="true"></i> Adventure</button><button type="button" data-discover-cat="education"><i data-lucide="book-open" aria-hidden="true"></i> Education</button></div>
     <a href="#experiences" class="hero-scroll" aria-label="Scroll to Discover Your Galera"><i data-lucide="chevron-down"></i></a>
-   </section><!-- Wave -->
+  </section>
+  <section id="notice-board" class="notice-board py-16 hidden" aria-labelledby="notice-title">
+   <div class="max-w-7xl mx-auto px-5"><p class="section-eyebrow">TOURISM OFFICE UPDATES</p><h2 id="notice-title">What's Happening in Puerto Galera</h2><div id="notice-list" class="notice-list" aria-live="polite"></div></div>
+  </section><!-- Wave -->
    <div class="wave-divider" style="margin-top:-1px">
     <svg viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0,30 C360,60 720,0 1080,30 C1260,45 1380,20 1440,30 L1440,60 L0,60Z" fill="#FFFDF7"></path>
     </svg>
   </div><!-- DISCOVER YOUR GALERA -->
   <section id="experiences" class="featured-section section-coconut py-20" aria-labelledby="featured-title"><div class="max-w-7xl mx-auto px-5"><p class="section-eyebrow text-center">DISCOVER YOUR GALERA</p><h2 id="featured-title" class="text-center mb-3">How Do You Want to Experience Galera?</h2><p class="section-lead text-center mb-10">Choose a mood and explore matching places from the destination guide.</p><div id="featured-grid" class="mood-grid"></div></div></section>
-  <section id="featured-destinations" class="carousel-section py-20" aria-labelledby="carousel-title"><div class="max-w-7xl mx-auto px-5"><div class="carousel-heading"><div><p class="section-eyebrow">PLACES TO START</p><h2 id="carousel-title">Featured Destinations</h2><p class="section-lead">A few highlights from the existing destination guide.</p></div><div class="carousel-controls"><button id="carousel-prev" type="button" aria-label="Previous featured destination"><i data-lucide="chevron-left" aria-hidden="true"></i></button><button id="carousel-next" type="button" aria-label="Next featured destination"><i data-lucide="chevron-right" aria-hidden="true"></i></button></div></div><div id="destination-carousel" class="destination-carousel" aria-label="Featured destinations"></div></div></section>
-  <section id="stories" class="editorial-section py-20" aria-labelledby="editorial-title"><div class="max-w-7xl mx-auto px-5"><p class="section-eyebrow text-center">STORIES OF THE ISLAND</p><h2 id="editorial-title" class="text-center mb-10">More Ways to Discover</h2>
-   <article class="editorial-story fade-in"><img src="assets/images/coral-garden-3100361.jpg" alt="Colorful coral reef and marine life" loading="lazy"><div><p class="section-eyebrow">THE UNDERWATER WORLD</p><h3>Dive Into Another World</h3><p>Puerto Galera's dive sites include coral gardens, channels, and wrecks. The Verde Island Passage is known for remarkable marine biodiversity.</p><button type="button" data-story-cat="dive">Explore dive sites <span aria-hidden="true">↗</span></button></div></article>
-   <article class="editorial-story fade-in"><img src="assets/images/puerto-galera-tropical-coast-1450340.jpg" alt="Tropical beach and clear water" loading="lazy"><div><p class="section-eyebrow">THE COAST</p><h3>Escape to the Shore</h3><p>From quiet coves to lively coastal spots, Puerto Galera offers beaches for swimming, sea views, and time by the water.</p><button type="button" data-story-cat="beach">Explore beaches <span aria-hidden="true">↗</span></button></div></article>
-   <article class="editorial-story fade-in"><img src="assets/images/tukuran-falls-2743287.jpg" alt="Waterfall in lush tropical greenery" loading="lazy"><div><p class="section-eyebrow">THE WILD SIDE</p><h3>Follow the Wild Side</h3><p>Waterfalls, forest trails, and island scenery invite visitors to explore beyond the shoreline.</p><button type="button" data-story-cat="nature">Explore nature <span aria-hidden="true">↗</span></button></div></article>
-   <article class="editorial-story fade-in"><img src="assets/images/ambang-mangyan-community-11514916.jpg" alt="Traditional handcraft activity" loading="lazy"><div><p class="section-eyebrow">HERITAGE &amp; COMMUNITY</p><h3>Experience Local Culture</h3><p>Discover heritage places and learn respectfully about the traditions and crafts of the Iraya Mangyan community.</p><button type="button" data-story-cat="culture">Explore culture <span aria-hidden="true">↗</span></button></div></article>
+  <section id="featured-destinations" class="carousel-section py-20" aria-labelledby="carousel-title"><div class="max-w-7xl mx-auto px-5"><div class="carousel-heading"><div><p class="section-eyebrow">PLACES TO START</p><h2 id="carousel-title">Featured Destinations</h2><p class="section-lead">A few highlights from the existing destination guide.</p></div><div class="carousel-controls"><button id="carousel-prev" type="button" aria-label="Previous featured destination"><i data-lucide="chevron-left" aria-hidden="true"></i></button><button id="carousel-next" type="button" aria-label="Next featured destination"><i data-lucide="chevron-right" aria-hidden="true"></i></button></div></div><div id="destination-carousel" class="destination-carousel" role="region" aria-label="Featured destinations" aria-roledescription="carousel"></div></div></section>
+  <section id="stories" class="editorial-section py-20" aria-labelledby="editorial-title"><div class="max-w-7xl mx-auto px-5"><p class="section-eyebrow">PUERTO GALERA, FELT</p><h2 id="editorial-title" class="editorial-heading">The Heart of Puerto Galera</h2><p class="editorial-intro">A living meeting of bright water, forested trails, local heritage, and island life. Find the part of Galera that stays with you.</p>
+   <article class="editorial-story reveal reveal-up"><div class="image-reveal"><img src="assets/images/coral-garden-3100361.jpg" alt="Colorful coral reef and marine life" loading="lazy"></div><div><p class="section-eyebrow">BENEATH THE SURFACE</p><h3>Dive Into Another World</h3><p>Coral gardens, channels, and wrecks reveal a vivid underwater landscape along the Verde Island Passage.</p><button type="button" data-story-cat="dive">Explore dive sites <span aria-hidden="true">↗</span></button></div></article>
+   <article class="editorial-story reveal reveal-up"><div class="image-reveal"><img src="assets/images/puerto-galera-tropical-coast-1450340.jpg" alt="Tropical beach and clear water" loading="lazy"></div><div><p class="section-eyebrow">A DIFFERENT SHORELINE</p><h3>Escape to the Shore</h3><p>Find a quieter cove, a swim in clear water, or a place to watch the coast change with the light.</p><button type="button" data-story-cat="beach">Explore beaches <span aria-hidden="true">↗</span></button></div></article>
+   <article class="editorial-story reveal reveal-up"><div class="image-reveal"><img src="assets/images/tukuran-falls-2743287.jpg" alt="Waterfall in lush tropical greenery" loading="lazy"></div><div><p class="section-eyebrow">GREEN INLAND</p><h3>Follow the Wild Side</h3><p>Waterfalls and forest trails offer another way to experience the island beyond its bays.</p><button type="button" data-story-cat="nature">Explore nature <span aria-hidden="true">↗</span></button></div></article>
+   <article class="editorial-story reveal reveal-up"><div class="image-reveal"><img src="assets/images/ambang-mangyan-community-11514916.jpg" alt="Traditional handcraft activity" loading="lazy"></div><div><p class="section-eyebrow">HERITAGE &amp; COMMUNITY</p><h3>Experience Local Culture</h3><p>Explore heritage places and learn respectfully about Iraya Mangyan culture, crafts, and community life.</p><button type="button" data-story-cat="culture">Explore culture <span aria-hidden="true">↗</span></button></div></article>
   </div></section><!-- INTRODUCTION -->
    <section class="intro-section section-coconut py-20" aria-labelledby="intro-title">
     <div class="max-w-6xl mx-auto px-5 intro-layout fade-in">
@@ -146,7 +149,7 @@
    <section id="features" class="section-seafoam py-20">
     <div class="max-w-6xl mx-auto px-5">
      <p class="section-eyebrow text-center">FIND YOUR REASON TO VISIT</p><h2 class="text-center mb-10" style="color: rgb(0, 95, 115); font-weight: 700; font-style: normal; font-size: 24px;">Why Visit Puerto Galera</h2>
-     <div class="why-grid grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div class="why-grid grid stagger-group sm:grid-cols-2 lg:grid-cols-3 gap-5">
       <button type="button" data-filter-feature="dive" class="tropical-card p-6 text-left"><h3 class="mb-2">World-Class Diving</h3><p>Discover coral gardens, wrecks, and marine life in the Verde Island Passage.</p></button>
       <button type="button" data-filter-feature="beach" class="tropical-card p-6 text-left"><h3 class="mb-2">Tropical Beaches</h3><p>Find clear waters, coastal views, and places to slow down.</p></button>
       <button type="button" data-filter-feature="nature" class="tropical-card p-6 text-left"><h3 class="mb-2">Waterfalls &amp; Forests</h3><p>Explore falls, trails, and the island's lush interior.</p></button>
@@ -156,6 +159,9 @@
      </div>
     </div>
    </section><!-- Wave -->
+  <section id="recognition" class="recognition-section py-16" aria-labelledby="recognition-title">
+   <div class="max-w-7xl mx-auto px-5 recognition-layout"><div class="recognition-mark" aria-hidden="true"><i data-lucide="award"></i></div><div><p class="section-eyebrow">A PLACE WORTH PROTECTING</p><h2 id="recognition-title">Recognition &amp; Responsible Tourism</h2><p>Puerto Galera is presented by its Tourism Office as the Philippines' No. 1 Dive Destination for 2025–2027. Enjoy its marine and cultural heritage with care.</p><a href="https://www.experiencepuertogalera.com/" target="_blank" rel="noopener noreferrer">View source at Experience Puerto Galera <span aria-hidden="true">↗</span></a></div></div>
+  </section>
    <div class="wave-divider">
     <svg viewBox="0 0 1440 50" preserveAspectRatio="none"><path d="M0,30 C480,0 960,50 1440,20 L1440,50 L0,50Z" fill="#F7E7CE"></path>
     </svg>
@@ -164,37 +170,40 @@
     <div class="max-w-5xl mx-auto px-5">
      <h2 class="text-center mb-3" style="color: rgb(0, 95, 115); font-weight: 700; font-style: normal; font-size: 24px;">PLAN YOUR TRIP</h2>
      <p class="prose-muted text-center mb-12" style="color: rgb(58, 90, 99); font-weight: 400; font-style: normal; font-size: 16px;">Step-by-step guide from Manila to Puerto Galera, based on Experience Puerto Galera.</p>
-     <div class="travel-timeline space-y-7">
-      <div id="getting-here" class="flex gap-4"><span class="step-circle shrink-0 flex items-center justify-center w-10 h-10 font-bold">1</span>
+    <div class="travel-timeline journey-route space-y-7">
+      <div class="journey-endpoint" data-journey-step><span class="journey-node"><i data-lucide="map-pin" aria-hidden="true"></i></span><strong>MANILA</strong></div>
+     <div id="getting-here" class="flex gap-4" data-journey-step><span class="step-circle shrink-0 flex items-center justify-center w-10 h-10 font-bold">1</span>
        <div>
         <h3 class="mb-2" style="color: rgb(2, 48, 71); font-weight: 700; font-style: normal; font-size: 19px;">Bus to Batangas Port</h3>
         <p class="prose-muted" style="color: rgb(58, 90, 99); font-weight: 400; font-style: normal; font-size: 16px;">From Buendia/Pasay or Cubao, take JAM Liner, DLTB, or JAC Liner to Batangas Port. Estimated fare: ₱200–₱320. Travel time: approximately 2–3.5 hours.</p>
        </div>
       </div>
-      <div id="ferry" class="flex gap-4"><span class="step-circle shrink-0 flex items-center justify-center w-10 h-10 font-bold">2</span>
-       <div>
-        <h3 class="mb-2" style="color: rgb(2, 48, 71); font-weight: 700; font-style: normal; font-size: 19px;">Ferry to Puerto Galera</h3>
-        <p class="prose-muted" style="color: rgb(58, 90, 99); font-weight: 400; font-style: normal; font-size: 16px;">Board a ferry from Batangas Pier via Island Water, Montenegro Lines, or Galerian. Estimated one-way fare: ₱600–₱900. Travel time: approximately 1–2 hours.</p>
-       </div>
-      </div>
-      <div id="fees-terminal" class="flex gap-4"><span class="step-circle shrink-0 flex items-center justify-center w-10 h-10 font-bold">3</span>
+      <div class="journey-waypoint" data-journey-step><span class="journey-node"><i data-lucide="anchor" aria-hidden="true"></i></span><strong>BATANGAS PORT</strong></div>
+      <div id="fees-terminal" class="flex gap-4" data-journey-step><span class="step-circle shrink-0 flex items-center justify-center w-10 h-10 font-bold">2</span>
        <div>
         <h3 class="mb-2" style="color: rgb(2, 48, 71); font-weight: 700; font-style: normal; font-size: 19px;">Terminal Fee</h3>
         <p class="prose-muted" style="color: rgb(58, 90, 99); font-weight: 400; font-style: normal; font-size: 16px;">Pay ₱90 terminal fee per passenger. Seniors, PWDs, and students are exempt with valid Philippine ID, as stated by the source.</p>
        </div>
       </div>
-      <div id="fees-environmental" class="flex gap-4"><span class="step-circle shrink-0 flex items-center justify-center w-10 h-10 font-bold">4</span>
+      <div id="ferry" class="flex gap-4" data-journey-step><span class="step-circle shrink-0 flex items-center justify-center w-10 h-10 font-bold">3</span>
+       <div>
+        <h3 class="mb-2" style="color: rgb(2, 48, 71); font-weight: 700; font-style: normal; font-size: 19px;">Ferry to Puerto Galera</h3>
+        <p class="prose-muted" style="color: rgb(58, 90, 99); font-weight: 400; font-style: normal; font-size: 16px;">Board a ferry from Batangas Pier via Island Water, Montenegro Lines, or Galerian. Estimated one-way fare: ₱600–₱900. Travel time: approximately 1–2 hours.</p>
+       </div>
+      </div>
+      <div id="fees-environmental" class="flex gap-4" data-journey-step><span class="step-circle shrink-0 flex items-center justify-center w-10 h-10 font-bold">4</span>
        <div>
         <h3 class="mb-2" style="color: rgb(2, 48, 71); font-weight: 700; font-style: normal; font-size: 19px;">PG Pass &amp; Environmental Fee</h3>
         <p class="prose-muted" style="color: rgb(58, 90, 99); font-weight: 400; font-style: normal; font-size: 16px;">Register for the PG Pass and pay the mandatory ₱120 environmental fee at Balatero Port. Minors, students, seniors, and PWDs receive a 20% discount with valid ID, as stated by the source.</p>
        </div>
       </div>
-      <div id="local-transport" class="flex gap-4"><span class="step-circle shrink-0 flex items-center justify-center w-10 h-10 font-bold">5</span>
+      <div id="local-transport" class="flex gap-4" data-journey-step><span class="step-circle shrink-0 flex items-center justify-center w-10 h-10 font-bold">5</span>
        <div>
         <h3 class="mb-2" style="color: rgb(2, 48, 71); font-weight: 700; font-style: normal; font-size: 19px;">Local Transport to Your Destination</h3>
         <p class="prose-muted" style="color: rgb(58, 90, 99); font-weight: 400; font-style: normal; font-size: 16px;">Take an authorized tricycle or blue-and-white electric tuk-tuk. Estimated charter fare: ₱200–₱300 to White Beach or Sabang. Travel time: approximately 10–20 minutes.</p>
        </div>
       </div>
+     <div class="journey-endpoint journey-arrival" data-journey-step><span class="journey-node"><i data-lucide="flag" aria-hidden="true"></i></span><strong>PUERTO GALERA</strong></div>
      </div>
     </div>
    </section>
@@ -278,6 +287,7 @@
     <details><summary>How do I get to Puerto Galera from Manila?</summary><p>The site describes taking a bus from Buendia/Pasay or Cubao to Batangas Port, then a ferry to Puerto Galera. Check with transport providers for current routes, fares, and schedules.</p></details>
     <details><summary>Where do ferries depart?</summary><p>The travel guide lists Batangas Pier as the departure point for ferries to Puerto Galera.</p></details>
     <details><summary>What visitor fees should I expect?</summary><p>The travel guide lists a ₱90 Batangas Pier terminal fee and a ₱120 environmental fee with PG Pass registration at Balatero Port, including discount details for eligible visitors. Fees can change; confirm current amounts and conditions with the Tourism Office.</p></details>
+    <details><summary>What is the PG Pass?</summary><p>The travel guide describes registering for the PG Pass and presenting its tourist QR code at the Balatero Port municipal desk for environmental-fee payment.</p></details>
     <details><summary>How do MinSUcanNGo QR destination codes work?</summary><p>Enter the destination code in the QR Guide lookup to open its destination information. Camera scanning is not available on this website.</p></details>
     <details><summary>How can I open a destination in Google Maps?</summary><p>Choose Maps from a destination card or guide. Google Maps searches by destination name; exact pins have not been verified.</p></details>
     <details><summary>How do I contact the Puerto Galera Tourism Office?</summary><p>Use the contact details and inquiry form in the Tourism Office section. The form opens your email application for you to review and send.</p></details>
@@ -422,6 +432,12 @@
    <p id="lightbox-caption" class="absolute bottom-5 text-white rounded-full px-4 py-2 text-center text-sm" style="background:rgba(2,48,71,.8)"></p>
   </div>
   <a id="back-to-top" href="#home" aria-label="Back to top"><i data-lucide="arrow-up" aria-hidden="true"></i></a>
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/swiper-bundle.min.js" defer></script>
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/swiper-bundle.min.js" defer></script>
   <script src="js/destinations.js" defer></script>
 <script src="js/app.js" defer></script>
  

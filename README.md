@@ -6,6 +6,10 @@ Standalone HTML, CSS, and vanilla JavaScript tourism site.
 
 From this folder, run `python -m http.server 8000` and open `http://localhost:8000`. The map, icons, and web fonts need an internet connection; site photos are local.
 
+## Frontend dependencies
+
+Run `npm install` once, then `npm run build` to copy the pinned GSAP, ScrollTrigger, and Swiper browser bundles into `vendor/`. The generated vendor files are used by the static site, so deployment does not need Node.js or `node_modules`.
+
 ## Assets and contact
 
 All 47 Pexels photos are in `assets/images/`; `assets/images/sources.txt` records the original URLs. The four supplied logos are in `assets/logos/`.

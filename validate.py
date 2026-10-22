@@ -9,12 +9,21 @@ try:
     with sync_playwright() as p:
         browser=p.chromium.launch(headless=True)
         for width,height in [(1440,900),(1280,800),(1024,768),(768,900),(430,932),(390,844),(360,780)]:
+            print('Testing viewport',width,flush=True)
             page=browser.new_page(viewport={'width':width,'height':height})
             errors=[]
             page.on('pageerror',lambda error:errors.append(str(error)))
             page.on('console',lambda message:errors.append(message.text) if message.type=='error' else None)
+            if width==360:
+                page.route('**/vendor/*.js',lambda route:route.fulfill(status=200,content_type='text/javascript',body=''))
             page.goto('http://127.0.0.1:8765',wait_until='domcontentloaded')
             page.wait_for_timeout(1800)
+            if width==360:
+                assert page.evaluate('!window.gsap && !window.ScrollTrigger && !window.Swiper')
+                assert 'swiper-initialized' not in page.locator('#destination-carousel').get_attribute('class')
+                assert page.locator('#home .hero-title').evaluate('(el)=>getComputedStyle(el).opacity')=='1'
+            else:
+                assert page.evaluate('!!window.gsap && !!window.ScrollTrigger && !!window.Swiper')
             if width in (1440,390) and os.environ.get('CAPTURE_PREVIEWS'):
                 page.screenshot(path=str(root/f'preview-{width}-hero.png'))
                 for section in ['intro-title','featured-title','explore','plan','qr-guide']:
@@ -24,10 +33,24 @@ try:
             assert page.locator('#dest-grid [data-destination-id]').count()>20,errors
             assert page.locator('#featured-grid button').count()==8
             assert page.locator('#destination-carousel .carousel-card').count()==8
+            if width!=360:
+                assert 'swiper-initialized' in page.locator('#destination-carousel').get_attribute('class')
             assert page.locator('#trip-grid .trip-card').count()==5
-            assert page.locator('#faq details').count()==6
+            assert page.locator('#faq details').count()==7
+            assert 'hidden' in page.locator('#notice-board').get_attribute('class')
+            assert page.locator('[data-journey-step]').count()==8
+            assert page.locator('#recognition').is_visible()
+            assert page.locator('#reading-progress').count()==1
+            assert page.locator('#home [data-hero-step]').count()==8
             assert page.locator('#gallery-grid button').count()>0
+            assert page.locator('#home').evaluate('(el)=>el.classList.contains("hero-ready")')
             assert page.locator('body').evaluate('(el)=>el.scrollWidth<=innerWidth+2'),f'horizontal overflow {width}'
+            page.evaluate('window.scrollTo(0, document.documentElement.scrollHeight / 2)')
+            page.wait_for_function("getComputedStyle(document.getElementById('reading-progress')).transform !== 'matrix(0, 0, 0, 1, 0, 0)'")
+            page.locator('.editorial-story').first.scroll_into_view_if_needed()
+            page.wait_for_function("document.querySelector('.editorial-story .image-reveal').classList.contains('is-visible')")
+            page.locator('.journey-route [data-journey-step]').first.scroll_into_view_if_needed()
+            page.wait_for_function("document.querySelector('.journey-route [data-journey-step]').classList.contains('is-active')")
             if width<1024:
                 page.locator('#menu-open').click()
                 assert 'open' in page.locator('#mobile-menu').get_attribute('class')
@@ -48,14 +71,19 @@ try:
                 assert page.url.endswith('#trips')
             page.locator('#featured-grid [data-mood-cat="culture"]').click()
             assert page.locator('#filter-tabs [data-cat="culture"]').get_attribute('aria-pressed')=='true'
-            page.locator('#carousel-next').click()
-            page.wait_for_timeout(250)
-            assert page.locator('#destination-carousel').evaluate('(el)=>el.scrollLeft>0')
+            if width==360:
+                page.locator('#carousel-next').click()
+                assert page.locator('#destination-carousel').evaluate('(el)=>el.scrollLeft>0')
+            else:
+                active_index=page.locator('#destination-carousel').evaluate('(el)=>el.swiper.activeIndex')
+                page.locator('#carousel-next').click()
+                page.wait_for_function("previous => document.querySelector('#destination-carousel').swiper.activeIndex !== previous",arg=active_index,timeout=5000)
             page.locator('#trip-grid button').first.focus()
             page.keyboard.press('Enter')
             assert 'hidden' not in page.locator('#trip-modal').get_attribute('class')
             assert page.locator('#trip-modal-stops li').count()>0
             page.keyboard.press('Escape')
+            page.wait_for_function("document.getElementById('trip-modal').classList.contains('hidden')")
             assert 'hidden' in page.locator('#trip-modal').get_attribute('class')
             assert page.locator('#faq details').first.get_attribute('open') is None
             page.locator('#faq details summary').first.click()
@@ -64,6 +92,7 @@ try:
                 page.emulate_media(reduced_motion='reduce')
                 assert page.evaluate("matchMedia('(prefers-reduced-motion: reduce)').matches")
                 assert page.locator('.hero-section>img').evaluate('(el)=>getComputedStyle(el).animationName')=='none'
+                assert page.locator('.hero-title').evaluate('(el)=>getComputedStyle(el).opacity')=='1'
                 page.emulate_media(reduced_motion='no-preference')
             page.locator('#filter-tabs [data-cat="dive"]').click()
             assert page.locator('#dest-grid [data-destination-id]').count()>0
@@ -79,13 +108,16 @@ try:
             page.locator('#dest-grid [data-destination-id]').first.click()
             assert 'hidden' not in page.locator('#dest-modal').get_attribute('class')
             page.locator('#modal-sources-btn').click()
+            page.wait_for_function("!document.getElementById('sources-modal').classList.contains('hidden')")
             assert 'hidden' not in page.locator('#sources-modal').get_attribute('class')
             page.locator('#sources-modal-close').click()
+            page.wait_for_function("document.getElementById('sources-modal').classList.contains('hidden')")
             page.locator('#gallery-grid button').first.click(force=True)
             assert 'hidden' not in page.locator('#lightbox').get_attribute('class')
             assert page.locator('#gallery-grid img').first.evaluate('(el)=>el.complete && el.naturalWidth>0')
             page.locator('#lightbox-next').click()
             page.locator('#lightbox-close').click()
+            page.wait_for_function("document.getElementById('lightbox').classList.contains('hidden')")
             page.locator('#gallery-tabs [data-gcat="nature"]').click()
             assert page.locator('#gallery-grid button').count()>0
             page.locator('#gallery-tabs [data-gcat="all"]').click()
