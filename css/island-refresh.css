@@ -1,0 +1,50 @@
+/* Immersive destination styling based on Experience Puerto Galera's visual direction. */
+:root{--island-ink:#103c3d;--island-sand:#faf6eb;--island-gold:#eec67e}
+html{scroll-behavior:smooth;scroll-padding-top:5.5rem}
+body{background:var(--island-sand)!important}
+::selection{background:#d2ebdf;color:var(--island-ink)}
+.glass-nav{border-bottom:1px solid rgba(255,255,255,.3);border-radius:0!important;transition:background .35s ease,box-shadow .35s ease}
+.glass-nav:not(.scrolled){background:rgba(250,246,235,.9);backdrop-filter:blur(20px)}
+.glass-nav.scrolled{background:rgba(250,246,235,.97);box-shadow:0 12px 36px rgba(9,55,57,.1)}
+.hero-section{min-height:100svh;justify-content:flex-start;text-align:left;padding:8rem max(5vw,1.25rem) 10rem;background:#123d43}
+.hero-section>img{object-position:center 52%}
+.hero-overlay{background:linear-gradient(90deg,rgba(5,34,38,.82) 0%,rgba(5,34,38,.52) 42%,rgba(5,34,38,.04) 88%),linear-gradient(0deg,rgba(5,34,38,.64),transparent 32%)}
+.hero-content{width:min(100%,86rem);max-width:86rem;margin-inline:auto;padding:0;position:relative;z-index:1}
+.hero-logos{justify-content:flex-start;margin-bottom:clamp(1.5rem,4vh,3rem)}
+.hero-logos img{width:2.8rem;height:2.8rem}
+.hero-eyebrow{font-size:.73rem;letter-spacing:.34em;color:var(--island-gold);margin-bottom:1.3rem}
+.hero-title{max-width:12ch;font-family:Georgia,'Times New Roman',serif!important;font-size:clamp(4.2rem,9.5vw,10rem)!important;font-weight:400!important;line-height:.91!important;letter-spacing:-.065em;text-wrap:initial;text-shadow:0 8px 40px rgba(0,0,0,.22)}
+.hero-title em{font-weight:400;color:#e9f7e9}
+.hero-tagline{font-family:'DM Sans',sans-serif;font-size:clamp(1.1rem,1.8vw,1.5rem);font-weight:500!important;color:var(--island-gold);letter-spacing:.01em}
+.hero-intro{max-width:36rem;margin-inline:0;color:#f0f8f2;font-size:clamp(1rem,1.25vw,1.15rem)}
+.hero-actions{justify-content:flex-start}
+.hero-actions .btn-sunset{background:var(--island-gold);color:var(--island-ink);border:1px solid var(--island-gold)}
+.hero-actions .btn-sunset:hover{background:#fff0d1;transform:translateY(-3px)}
+.hero-actions .btn-glass{background:rgba(255,255,255,.1);backdrop-filter:blur(12px)}
+.hero-actions a{border-radius:999px;transition:transform .3s ease,background .3s ease,box-shadow .3s ease}
+.hero-actions a:hover{box-shadow:0 16px 35px rgba(0,0,0,.2)}
+.hero-award{margin-top:2rem;background:rgba(8,44,46,.5);border-color:rgba(255,255,255,.4);color:#fff}
+.hero-features{width:min(90%,86rem);bottom:2.2rem;justify-content:space-between;gap:.25rem;border-radius:0;border-width:1px 0 0;background:transparent;backdrop-filter:none;box-shadow:none;padding:1rem 0 0}
+.hero-features button{color:#fff;font-size:.82rem;letter-spacing:.02em}
+.hero-scroll,.wave-divider{display:none}
+.section-eyebrow{letter-spacing:.22em!important}
+.featured-section,.carousel-section,.editorial-section,.intro-section{padding-block:clamp(5rem,8vw,9rem)!important}
+.featured-section{background:var(--island-sand)}
+.featured-section h2,.carousel-heading h2,.editorial-heading,.intro-copy h2{font-family:Georgia,'Times New Roman',serif!important;font-weight:400!important;letter-spacing:-.045em;line-height:1.08}
+.mood-card,.carousel-card,.editorial-story .image-reveal,.intro-visual img{border-radius:.25rem;overflow:hidden}
+.mood-card,.carousel-card,.trip-card{transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s ease}
+.mood-card:hover,.carousel-card:hover,.trip-card:hover{transform:translateY(-7px);box-shadow:0 24px 50px rgba(8,58,56,.2)}
+.mood-card img,.carousel-card>img,.trip-card img{transition:transform .9s cubic-bezier(.22,1,.36,1)}
+.mood-card:hover img,.carousel-card:hover>img,.trip-card:hover img{transform:scale(1.07)}
+.carousel-section{background:#e9f2ed}
+.editorial-section{background:var(--island-sand)}
+.editorial-heading{font-size:clamp(3rem,6vw,6rem)!important}
+.editorial-story{margin-bottom:clamp(4rem,8vw,8rem)}
+.editorial-story h3{font-family:Georgia,'Times New Roman',serif!important;font-size:clamp(2.25rem,4vw,4rem)!important;font-weight:400!important;letter-spacing:-.04em}
+.editorial-story .image-reveal,.editorial-story .image-reveal img{min-height:clamp(21rem,40vw,35rem);height:clamp(21rem,40vw,35rem)}
+.editorial-story .image-reveal img{transition:transform .9s cubic-bezier(.22,1,.36,1)}
+.editorial-story .image-reveal:hover img{transform:scale(1.045)}
+.editorial-story button{display:inline-flex;align-items:center;gap:.5rem;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:.3rem;transition:gap .3s ease,color .3s ease}
+.editorial-story button:hover{gap:1rem;color:#083c40}
+@media(max-width:767px){.hero-section{min-height:100svh;padding:7rem 1.25rem 10rem}.hero-overlay{background:linear-gradient(90deg,rgba(5,34,38,.7),rgba(5,34,38,.25)),linear-gradient(0deg,rgba(5,34,38,.75),transparent 45%)}.hero-title{font-size:clamp(3.5rem,12vw,6rem)!important}.hero-logos{margin-bottom:1.5rem}.hero-features{width:calc(100% - 2.5rem);bottom:1rem;justify-content:flex-start;overflow-x:auto;scrollbar-width:none}.hero-features button{flex:none}.editorial-story .image-reveal,.editorial-story .image-reveal img{min-height:0;height:clamp(17rem,62vw,27rem)}.editorial-story{margin-bottom:4rem}.featured-section,.carousel-section,.editorial-section,.intro-section{padding-block:4.5rem!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.mood-card,.carousel-card,.trip-card,.mood-card img,.carousel-card>img,.trip-card img,.editorial-story .image-reveal img,.hero-actions a{transition:none!important}.mood-card:hover,.carousel-card:hover,.trip-card:hover,.mood-card:hover img,.carousel-card:hover>img,.trip-card:hover img,.editorial-story .image-reveal:hover img{transform:none!important}}
