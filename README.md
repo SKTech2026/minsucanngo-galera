@@ -12,7 +12,7 @@ Run `npm install` once, then `npm run build` to copy the pinned GSAP, ScrollTrig
 
 ## Assets and contact
 
-All 47 Pexels photos are in `assets/images/`; `assets/images/sources.txt` records the original URLs. The four supplied logos are in `assets/logos/`.
+All 47 Pexels photos are in `assets/images/`; `assets/images/sources.txt` records the original URLs. The 107 images from the shared DESTINATIONS Drive folder are in `assets/images/drive-destinations/`, organized by category and attraction. The four supplied logos are in `assets/logos/`.
 
 The contact form validates fields and opens a drafted email to the address shown on the site. Sending happens in the visitor's email app. No inquiries are stored by this static project.
 
