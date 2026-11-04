@@ -7,7 +7,8 @@ const files = [
   ['node_modules/gsap/dist/gsap.min.js', 'vendor/gsap.min.js'],
   ['node_modules/gsap/dist/ScrollTrigger.min.js', 'vendor/ScrollTrigger.min.js'],
   ['node_modules/swiper/swiper-bundle.min.js', 'vendor/swiper-bundle.min.js'],
-  ['node_modules/swiper/swiper-bundle.min.css', 'vendor/swiper-bundle.min.css']
+  ['node_modules/swiper/swiper-bundle.min.css', 'vendor/swiper-bundle.min.css'],
+  ['node_modules/html5-qrcode/html5-qrcode.min.js', 'vendor/html5-qrcode.min.js']
 ];
 
 await mkdir(join(root, 'vendor'), { recursive: true });

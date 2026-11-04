@@ -4,11 +4,11 @@ Standalone HTML, CSS, and vanilla JavaScript tourism site.
 
 ## Run locally
 
-From this folder, run `python -m http.server 8000` and open `http://localhost:8000`. The map, icons, and web fonts need an internet connection; site photos are local.
+From this folder, run `python -m http.server 8000` and open `http://localhost:8000`. The map, icons, and web fonts need an internet connection; site photos are local. Camera-based QR scanning requires HTTPS or localhost and browser permission; saved QR images can also be scanned.
 
 ## Frontend dependencies
 
-Run `npm install` once, then `npm run build` to copy the pinned GSAP, ScrollTrigger, and Swiper browser bundles into `vendor/`. The generated vendor files are used by the static site, so deployment does not need Node.js or `node_modules`.
+Run `npm install` once, then `npm run build` to copy the pinned GSAP, ScrollTrigger, Swiper, and html5-qrcode browser bundles into `vendor/`. The generated vendor files are used by the static site, so deployment does not need Node.js or `node_modules`.
 
 ## Assets and contact
 

@@ -251,9 +251,14 @@
     <div class="max-w-4xl mx-auto px-5 text-center">
      <p class="section-eyebrow">YOUR DIGITAL DESTINATION PASS</p><h2 class="mb-3" style="color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 24px;">Scan. Discover. Explore.</h2>
      <p class="mb-7" style="color: rgb(144, 224, 239); font-weight: 400; font-style: normal; font-size: 16px;">Scan a destination QR code or enter its code to instantly open a travel guide.</p>
-     <div class="w-44 h-44 mx-auto mb-6 flex items-center justify-center rounded-2xl" style="border:3px solid var(--crystal);background:rgba(255,255,255,.05);backdrop-filter:blur(6px)"><i data-lucide="scan" style="color:var(--crystal)" class="w-14 h-14"></i>
-     </div>
-     <p class="text-white/80 text-sm mb-5">Camera scanning is not available in this environment. Use the input or buttons below.</p>
+    <div id="qr-reader" class="qr-reader hidden mx-auto mb-4" role="region" aria-label="QR camera preview"></div>
+    <div class="qr-scanner-controls mx-auto mb-3">
+     <button id="qr-scan-start" type="button" class="btn-outline qr-scan-button"><i data-lucide="camera" aria-hidden="true"></i><span>Start camera</span></button>
+     <button id="qr-scan-stop" type="button" class="btn-outline qr-scan-button hidden"><i data-lucide="square" aria-hidden="true"></i><span>Stop camera</span></button>
+     <label for="qr-image-input" class="btn-outline qr-scan-button"><i data-lucide="image-up" aria-hidden="true"></i><span>Scan from image</span></label>
+     <input id="qr-image-input" class="sr-only" type="file" accept="image/*">
+    </div>
+    <p id="qr-scan-status" class="qr-scan-status mb-5" role="status" aria-live="polite">Camera scanning needs permission and a secure connection (HTTPS or localhost). You can also scan a saved QR image.</p>
      <form id="qr-form" class="flex gap-2 max-w-md mx-auto mb-5"><label for="qr-input" class="sr-only">Enter destination code</label><input id="qr-input" type="text" placeholder="Enter destination code (e.g. CORAL01)" class="min-w-0 flex-1 rounded-full px-4 py-3 text-[#023047]"><button type="submit" class="btn-sunset px-5 font-bold">Look Up</button>
      </form>
      <p id="qr-error" class="hidden mb-4" role="status" style="color:var(--coral)">No destination found for that code.</p>
@@ -291,7 +296,7 @@
     <details><summary>Where do ferries depart?</summary><p>The travel guide lists Batangas Pier as the departure point for ferries to Puerto Galera.</p></details>
     <details><summary>What visitor fees should I expect?</summary><p>The travel guide lists a ₱90 Batangas Pier terminal fee and a ₱120 environmental fee with PG Pass registration at Balatero Port, including discount details for eligible visitors. Fees can change; confirm current amounts and conditions with the Tourism Office.</p></details>
     <details><summary>What is the PG Pass?</summary><p>The travel guide describes registering for the PG Pass and presenting its tourist QR code at the Balatero Port municipal desk for environmental-fee payment.</p></details>
-    <details><summary>How do MinSUcanNGo QR destination codes work?</summary><p>Enter the destination code in the QR Guide lookup to open its destination information. Camera scanning is not available on this website.</p></details>
+    <details><summary>How do MinSUcanNGo QR destination codes work?</summary><p>Scan a destination QR code with your camera, choose a saved QR image, or enter its code in the QR Guide to open the destination information.</p></details>
     <details><summary>How can I open a destination in Google Maps?</summary><p>Choose Maps from a destination card or guide. Google Maps searches by destination name; exact pins have not been verified.</p></details>
     <details><summary>How do I contact the Puerto Galera Tourism Office?</summary><p>Use the contact details and inquiry form in the Tourism Office section. The form opens your email application for you to review and send.</p></details>
    </div></div>
@@ -438,6 +443,7 @@
   <script src="vendor/gsap.min.js" defer></script>
   <script src="vendor/ScrollTrigger.min.js" defer></script>
   <script src="vendor/swiper-bundle.min.js" defer></script>
+  <script src="vendor/html5-qrcode.min.js" defer></script>
   <script src="js/destinations.js" defer></script>
   <script src="js/drive-gallery.js" defer></script>
 <script src="js/app.js" defer></script>
