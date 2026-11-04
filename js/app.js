@@ -27,12 +27,12 @@ galleryItems.forEach((g, i) => {
   contentTitle: g.caption,
   destination: g.caption,
   photographer: 'Not stated by the original source.',
-  publisher: 'Pexels',
+  publisher: g.publisher || 'Pexels',
   organization: 'Source information unavailable',
-  originalImageUrl: g.src,
+  originalImageUrl: g.originalImageUrl || g.src,
   license: 'Not stated by the original source.',
   usedOn: 'Gallery â€” ' + g.cat,
-  notes: 'Image resized and optimized for web display. Display crops may vary depending on screen size.',
+  notes: g.publisher === 'Google Drive' ? 'Image supplied in the shared DESTINATIONS Drive folder.' : 'Image resized and optimized for web display. Display crops may vary depending on screen size.',
   filterCat: 'photos',
   searchText: (g.caption + ' ' + g.cat + ' gallery').toLowerCase()
  });
@@ -221,7 +221,7 @@ function renderCreditsSection(){
    body.innerHTML='<p class="font-bold" style="color:var(--navy)">'+esc(c.contentTitle)+'</p>'+
     '<p><span class="credit-label">Photographer:</span> <span class="credit-value">'+esc(c.photographer)+'</span></p>'+
     '<p><span class="credit-label">Published by:</span> <span class="credit-value">'+esc(c.publisher)+'</span></p>'+
-    (c.originalImageUrl?'<p><span class="credit-label">Source Image:</span> <a href="'+esc(c.originalImageUrl)+'" target="_blank" rel="noopener noreferrer" class="source-link text-sm">View on Pexels â†—</a></p>':'')+
+    (c.originalImageUrl?'<p><span class="credit-label">Source:</span> <a href="'+esc(c.originalImageUrl)+'" target="_blank" rel="noopener noreferrer" class="source-link text-sm">'+(c.publisher==='Google Drive'?'Open Drive folder':'View source image')+' â†—</a></p>':'')+
     '<p><span class="credit-label">License / Usage:</span> <span class="credit-value">'+esc(c.license)+'</span></p>'+
     '<p><span class="credit-label">Website Usage:</span> <span class="credit-value">'+esc(c.usedOn)+'</span></p>'+
     (c.notes?'<p class="text-xs prose-muted italic">'+esc(c.notes)+'</p>':'');
@@ -262,13 +262,15 @@ function renderCreditsSection(){
 }
 
 /* ===== Gallery ===== */
+let galleryVisibleCount=12;
 function renderGallery(){
   const allMatches = galleryFilter === 'all' ? galleryItems : galleryItems.filter(g => g.cat === galleryFilter);
-  filteredGallery = allMatches.slice(0, 8);
+  filteredGallery = allMatches;
+  const visibleGallery = allMatches.slice(0, galleryVisibleCount);
   const grid = $('gallery-grid');
   grid.classList.add('is-refreshing');
   grid.replaceChildren();
-  filteredGallery.forEach((g, i) => {
+  visibleGallery.forEach((g, i) => {
     const item = document.createElement('article');
     item.className = 'gallery-tile';
     const btn = document.createElement('button');
@@ -291,6 +293,10 @@ function renderGallery(){
     item.append(btn);
     grid.append(item);
   });
+  $('gallery-count').textContent = allMatches.length
+    ? 'Showing ' + visibleGallery.length + ' of ' + allMatches.length + ' photos'
+    : 'No photos in this category yet.';
+  $('gallery-more').classList.toggle('hidden', visibleGallery.length >= allMatches.length);
   window.requestAnimationFrame(() => {
     grid.classList.remove('is-refreshing');
     if (gsapMotionEnabled && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -371,7 +377,8 @@ document.addEventListener('click',e=>{const control=e.target.closest('[data-disc
  $('mega-panel').addEventListener('click',e=>{if(e.target.closest('a')){document.querySelectorAll('.mega-trigger').forEach(item=>item.setAttribute('aria-expanded','false'));$('mega-panel').classList.add('hidden')}});
  document.addEventListener('click',e=>{if(e.target.closest('.desktop-nav,.mega-panel'))return;$('mega-panel').classList.add('hidden');document.querySelectorAll('.mega-trigger').forEach(item=>item.setAttribute('aria-expanded','false'))});
 document.addEventListener('click',e=>{const guide=e.target.closest('#dest-grid [data-destination-id]');if(guide){e.preventDefault();const d=destinations.find(item=>item.id===guide.dataset.destinationId);if(d){guide.setAttribute('aria-pressed','true');openModal(d.id,guide)}return}const source=e.target.closest('#dest-grid [data-source-id]');if(source){e.preventDefault();const d=destinations.find(item=>item.id===source.dataset.sourceId);if(d)openSourcesModal(d)}});document.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const control=e.target.closest('#dest-grid [data-destination-id],#dest-grid [data-source-id]');if(!control)return;e.preventDefault();control.click()});
-$('gallery-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-gcat]');if(!b)return;galleryFilter=b.dataset.gcat;setTabs('gallery-tabs','gcat',galleryFilter);renderGallery()});
+$('gallery-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-gcat]');if(!b)return;galleryFilter=b.dataset.gcat;galleryVisibleCount=12;setTabs('gallery-tabs','gcat',galleryFilter);renderGallery()});
+$('gallery-more').addEventListener('click',()=>{galleryVisibleCount+=12;renderGallery()});
 $('modal-x').addEventListener('click',closeModal);$('modal-close').addEventListener('click',closeModal);$('modal-inquire').addEventListener('click',closeModal);$('dest-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
 $('sources-modal-close').addEventListener('click',closeSourcesModal);$('sources-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeSourcesModal()});
 $('lightbox-close').addEventListener('click',closeLightbox);$('lightbox-prev').addEventListener('click',()=>moveLightbox(-1));$('lightbox-next').addEventListener('click',()=>moveLightbox(1));$('lightbox').addEventListener('click',e=>{if(e.target===e.currentTarget)closeLightbox()});
