@@ -362,6 +362,7 @@ function initHeroVideo(){const hero=$('home'),video=hero.querySelector('.hero-vi
 /* ===== Init ===== */
 document.addEventListener('DOMContentLoaded',()=>{
 renderNoticeBoard();renderFeatured();renderDestinationCarousel();destinationSwiper=initDestinationSwiper();renderTrips();renderDestinations();renderGallery();renderCreditsSection();if(window.lucide)lucide.createIcons();initHeroVideo();initVisualMotion();
+const linkedDestinationCode=new URLSearchParams(window.location.search).get('destination');if(linkedDestinationCode){$('qr-input').value=linkedDestinationCode;lookupQR(linkedDestinationCode)}
 ['CORAL01','MUEL01','TUKU01','ESCA01','AMBA01','BACL01'].forEach(id=>{const d=destinations.find(x=>x.id===id),b=document.createElement('button');b.type='button';b.textContent=d.name;b.className='qr-sample-btn px-4 py-2 text-sm';b.addEventListener('click',()=>{$('qr-input').value=id;lookupQR()});$('qr-samples').append(b)});
 if(window.L){map=L.map('plan-map',{scrollWheelZoom:false}).setView([13.50,120.96],11);map.attributionControl.setPrefix(false);L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'}).addTo(map)}
 const navLinks=[...document.querySelectorAll('.desktop-nav a[href^="#"]')];const sections=navLinks.map(link=>$(link.hash.slice(1))).filter(Boolean);

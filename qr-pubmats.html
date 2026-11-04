@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#023047">
+  <meta name="description" content="Destination QR posters for Puerto Galera.">
+  <title>Destination QR Posters | MinSUcanNGo Galera</title>
+  <link rel="icon" type="image/png" href="assets/logos/minsucanngo-logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&amp;family=DM+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/qr-pubmats.css">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js" defer></script>
+</head>
+<body>
+  <header class="poster-topbar">
+    <a class="poster-brand" href="index.html">
+      <img src="assets/logos/minsucanngo-logo.png" alt="">
+      <span>MinSUcanNGo Galera</span>
+    </a>
+    <a class="back-link" href="index.html#qr-guide"><i data-lucide="arrow-left" aria-hidden="true"></i><span>Back to QR Guide</span></a>
+  </header>
+  <main class="poster-shell">
+    <section class="poster-heading" aria-labelledby="page-title">
+      <div>
+        <p class="poster-eyebrow">ADMIN DOWNLOADS</p>
+        <h1 id="page-title">Destination QR Posters</h1>
+        <p class="poster-subtitle">Puerto Galera <span aria-hidden="true">/</span> Oriental Mindoro</p>
+      </div>
+      <div class="download-all-area">
+        <button id="download-all" class="download-all-button" type="button"><i data-lucide="archive-download" aria-hidden="true"></i><span>Download all posters (.zip)</span></button>
+        <p id="download-status" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+    <section class="poster-tools" aria-label="Poster filters">
+      <label class="search-field"><i data-lucide="search" aria-hidden="true"></i><span class="sr-only">Search destinations</span><input id="poster-search" type="search" placeholder="Search destinations" autocomplete="off"></label>
+      <label class="category-field"><span class="sr-only">Filter by category</span><select id="poster-category"><option value="all">All categories</option></select></label>
+      <p id="poster-count" role="status" aria-live="polite"></p>
+    </section>
+    <section id="poster-grid" class="poster-grid" aria-label="Destination QR posters" aria-busy="true"></section>
+  </main>
+  <script src="vendor/qrcode-generator.min.js" defer></script>
+  <script src="vendor/jszip.min.js" defer></script>
+  <script src="js/destinations.js" defer></script>
+  <script src="js/qr-pubmats.js" defer></script>
+</body>
+</html>
